@@ -156,14 +156,22 @@ def Videos(name, url, page = 1):
 
 ##########################################################################################
 def CreateURL(url):
-    if not '?' in url:
-        url = url + '?'
-    else:
-        url = url + '&'
+    stringToAdd = ""
+    
+    if Prefs['safe'] and not 'safe_mode=on' in url:
+        url         = url.replace('safe_mode=off', '')
+        stringToAdd = 'safe_mode=on'
         
-    if Prefs['safe']:
-        url = url + 'safe_mode=on'
-    else:
-        url = url + 'safe_mode=off'
+    elif not Prefs['safe'] and not 'safe_mode=off' in url:
+        url         = url.replace('safe_mode=on', '')
+        stringToAdd = 'safe_mode=off'
         
+    if stringToAdd:
+        if not '?' in url:
+            url = url + '?'
+        else:
+            url = url + '&'
+        
+        url = url + stringToAdd     
+    
     return url
