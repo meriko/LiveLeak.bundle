@@ -52,7 +52,7 @@ def Start():
 def ValidatePrefs():
     oc = ObjectContainer()
     oc.header  = "Note!"
-    oc.message = "Please restart channel for changes to take affect"
+    oc.message = "Please restart channel for changes to take effect"
     return oc
 
 ##########################################################################################
