@@ -117,7 +117,6 @@ def Videos(name, url, page = 1):
 			title   = item.xpath(".//a/text()")[0]
 			
 			try:
-				Log(item.xpath(".//div/text()"))
 				summary = item.xpath(".//div/text()")[4].strip()
 			except:
 				summary = None
