@@ -45,7 +45,7 @@ def Start():
     
     DirectoryObject.thumb = R(ICON)
 
-    HTTP.CacheTime             = CACHE_1HOUR
+    HTTP.CacheTime             = CACHE_1MINUTE
     HTTP.Headers['User-agent'] = HTTP_USER_AGENT
 
 ##########################################################################################
