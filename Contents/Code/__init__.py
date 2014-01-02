@@ -105,7 +105,7 @@ def MainMenu():
 def Videos(name, url, page = 1):
     oc = ObjectContainer(title1 = name)
 
-    pageElement = HTML.ElementFromURL(CreateURL(url + '#item_page=' + str(page)))
+    pageElement = HTML.ElementFromURL(CreateURL(url) + '&page=' + str(page))
     
     for item in pageElement.xpath("//*[@class = 'item_list']//li"):
         try:
@@ -138,19 +138,22 @@ def Videos(name, url, page = 1):
         except:
             pass
             
-
-    oc.add(
-        NextPageObject(
-            key = 
-                Callback(
-                    Videos,
-                    name = name,
-                    url = url,
-                    page = page + 1
-                ),
-            title = "More..."
+    if len(oc) > 1:
+        oc.add(
+            NextPageObject(
+                key = 
+                    Callback(
+                        Videos,
+                        name = name,
+                        url = url,
+                        page = page + 1
+                    ),
+                title = "More..."
+            )
         )
-    )
+    else:
+        oc.header  = "Nothing found"
+        oc.message = "No more videos found"
 
     return oc
 
