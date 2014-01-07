@@ -3,8 +3,8 @@ ART    = 'art-default.jpg'
 ICON   = 'icon-default.png'
 PREFIX = '/video/liveleak'
 
-BASE_URL = "http://www.liveleak.com/"
-
+BASE_URL        = "http://www.liveleak.com/"
+ITEMS_PER_PAGE  = 12
 HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1"
 
 PREDEFINED_CATEGORIES = [ 
@@ -94,7 +94,17 @@ def MainMenu():
                     title = title
                 )
             )       
-    
+
+    title = 'Search...'
+    oc.add(
+        InputDirectoryObject(
+            key = 
+                Callback(SearchChoice),
+                title = title, 
+                prompt = title
+        )
+    )
+
     # Add preference for Safe Mode
     oc.add(PrefsObject(title = "Preferences..."))
     
@@ -138,7 +148,7 @@ def Videos(name, url, page = 1):
         except:
             pass
             
-    if len(oc) > 1:
+    if len(oc) >= ITEMS_PER_PAGE:
         oc.add(
             NextPageObject(
                 key = 
@@ -156,6 +166,93 @@ def Videos(name, url, page = 1):
         oc.message = "No more videos found"
 
     return oc
+
+###################################################################################################
+@route(PREFIX + "/SearchChoice")
+def SearchChoice(query):
+    oc = ObjectContainer(title2 = 'Sort by')
+    
+    oc.add(
+        DirectoryObject(
+            key =
+                Callback(
+                    Search,
+                    query = query,
+                    sort = 'relevance'
+                ),
+            title = 'Sort by Relevance'
+        )
+    )
+    
+    oc.add(
+        DirectoryObject(
+            key =
+                Callback(
+                    Search,
+                    query = query,
+                    sort = 'date'
+                ),
+            title = 'Sort by Date'
+        )
+    )
+    
+    oc.add(
+        DirectoryObject(
+            key =
+                Callback(
+                    Search,
+                    query = query,
+                    sort = 'views'
+                ),
+            title = 'Sort by Views'
+        )
+    )
+    
+    oc.add(
+        DirectoryObject(
+            key =
+                Callback(
+                    Search,
+                    query = query,
+                    sort = 'comments'
+                ),
+            title = 'Sort by Comments'
+        )
+    )
+    
+    oc.add(
+        DirectoryObject(
+            key =
+                Callback(
+                    Search,
+                    query = query,
+                    sort = 'votes'
+                ),
+            title = 'Sort by Votes'
+        )
+    )
+    
+    oc.add(
+        DirectoryObject(
+            key =
+                Callback(
+                    Search,
+                    query = query,
+                    sort = 'shared'
+                ),
+            title = 'Sort by Shared'
+        )
+    )
+    
+    return oc
+
+###################################################################################################
+@route(PREFIX + "/Search")
+def Search(query, sort):
+    return Videos(
+        name = 'Results for ' + query,
+        url = CreateURL(BASE_URL + 'browse?q=%s&sort_by=%s' % (String.Quote(query), sort))
+    )
 
 ##########################################################################################
 def CreateURL(url):
