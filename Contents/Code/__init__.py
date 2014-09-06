@@ -1,6 +1,7 @@
 TITLE  = 'Live Leak'
 ART    = 'art-default.jpg'
 ICON   = 'icon-default.png'
+SEARCH = 'search.png'
 PREFIX = '/video/liveleak'
 
 BASE_URL        = "http://www.liveleak.com/"
@@ -98,10 +99,10 @@ def MainMenu():
     title = 'Search...'
     oc.add(
         InputDirectoryObject(
-            key = 
-                Callback(SearchChoice),
-                title = title, 
-                prompt = title
+            key = Callback(SearchChoice),
+            title = title, 
+            prompt = title,
+            thumb = R(SEARCH)
         )
     )
 
@@ -128,8 +129,10 @@ def Videos(name, url, page = 1):
             
             try:
                 summary = item.xpath(".//div/text()")[4].strip()
+                if not summary:
+                    summary = title
             except:
-                summary = None
+                summary = title
                 
             try:
                 thumb = item.xpath(".//a//img/@src")[0]
