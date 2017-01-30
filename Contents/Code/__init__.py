@@ -121,8 +121,8 @@ def Videos(name, url, page = 1):
     for item in pageElement.xpath("//*[@class = 'item_list']//li"):
         try:
             link = item.xpath(".//a/@href")[0]
-            
-            if not link.startswith("http://www.liveleak.com/view"):
+
+            if not 'liveleak.com/view' in link:
                 continue
                 
             title = item.xpath(".//a/text()")[0]
@@ -164,7 +164,8 @@ def Videos(name, url, page = 1):
                 title = "More..."
             )
         )
-    else:
+
+    if len(oc) < 1:
         oc.header  = "Nothing found"
         oc.message = "No more videos found"
 
