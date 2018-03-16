@@ -10,33 +10,9 @@ HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/53
 
 PREDEFINED_CATEGORIES = [ 
     {
-        'title':    'Popular Recent Items',
-        'url':      BASE_URL + 'browse?selection=popular'
-    },
-    {
-        'title':    'All Recent Items',
-        'url':      BASE_URL + 'browse?selection=all'
-    },
-    {
-        'title':    'Upcoming Items',
-        'url':      BASE_URL + 'browse?upcoming=1'
-    },
-    {
-        'title':    'Top Items Today',
-        'url':      BASE_URL + 'browse?rank_by=day'
-    },
-    {
-        'title':    'Top Items Week',
-        'url':      BASE_URL + 'browse?rank_by=week'
-    },
-    {
-        'title':    'Top Items Month',
-        'url':      BASE_URL + 'browse?rank_by=month'
-    },
-    {
-        'title':    'Top Items All Time',
-        'url':      BASE_URL + 'browse?rank_by=all_time'
-    },
+        'title':    'Recent Items',
+        'url':      BASE_URL + 'browse'
+    }
 ]
 
 ##########################################################################################
@@ -78,10 +54,10 @@ def MainMenu():
     )
     
     # Add categories parsed from site
-    for item in pageElement.xpath("//*[@id = 'subnav']//li"):
+    for item in pageElement.xpath("//*[@class = 'nav_bar']//li"):
         url = item.xpath(".//a/@href")[0]
         
-        if url.startswith("c/"):
+        if '/c/' in url:
             title = item.xpath(".//a/text()")[0]
             
             oc.add(
@@ -90,7 +66,7 @@ def MainMenu():
                         Callback(
                             Videos, 
                             name = title, 
-                            url = CreateURL(BASE_URL + url)
+                            url = url
                         ), 
                     title = title
                 )
@@ -118,24 +94,24 @@ def Videos(name, url, page = 1):
 
     pageElement = HTML.ElementFromURL(CreateURL(url) + '&page=' + str(page))
     
-    for item in pageElement.xpath("//*[@class = 'item_list']//li"):
+    for item in pageElement.xpath("//*[contains(@class, 'featured_item_main_outer')]//*[contains(@class,'featured_items_outer')]"):
         try:
             link = item.xpath(".//a/@href")[0]
 
             if not 'liveleak.com/view' in link:
                 continue
                 
-            title = item.xpath(".//a/text()")[0]
+            title = item.xpath(".//a/@title")[0]
             
             try:
-                summary = item.xpath(".//div/text()")[4].strip()
+                summary = item.xpath(".//p/text()")[0].strip()
                 if not summary:
                     summary = title
             except:
                 summary = title
                 
             try:
-                thumb = item.xpath(".//a//img/@src")[0]
+                thumb = item.xpath(".//img/@src")[0]
             except:
                 thumb = None
             
